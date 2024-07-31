@@ -69,12 +69,14 @@ public class GamesRest {
     public Response createGame(Games game) throws SQLException {
 
         // Validation
+        /*
         if (!game.isValid()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .header("Access-Control-Allow-Origin", "*")
                     .entity("Empty data for game")
                     .build();
         }
+         */
 
         gamesDAO.insert(game);
 
@@ -138,12 +140,14 @@ public class GamesRest {
         game.setGenre(updatedGame.getGenre());
         game.setPrice(updatedGame.getPrice());
 
+        /*
         if (!game.isValid()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .header("Access-Control-Allow-Origin", "*")
                     .entity("Empty data for game")
                     .build();
         }
+         */
 
         gamesDAO.update(game);
 

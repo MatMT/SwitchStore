@@ -47,6 +47,9 @@ public class GamesDAO extends AppConnection {
         pstmt.setString(1, game.getTitle());
         pstmt.setString(2, game.getGenre());
         pstmt.setDouble(3, game.getPrice());
+        pstmt.setInt(4, game.getId());
+        pstmt.executeUpdate();
+        close();
     }
 
     /**
