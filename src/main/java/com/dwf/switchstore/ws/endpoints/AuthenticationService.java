@@ -2,10 +2,8 @@ package com.dwf.switchstore.ws.endpoints;
 
 import com.dwf.switchstore.ws.model.Users;
 import com.dwf.switchstore.ws.model.dao.UsersDAO;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import com.dwf.switchstore.ws.util.JwtUtil;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -26,6 +24,7 @@ public class AuthenticationService {
 
     /**
      * This method is used to authenticate a user
+     *
      * @param loginUser the user to authenticate
      * @return a response indicating the result of the authentication
      * @throws SQLException if a database access error occurs
@@ -45,8 +44,8 @@ public class AuthenticationService {
         try {
             Users user = usersDAO.fetchByUsername(loginUser.getUsername());
             if (user != null && user.getPassword().equals(loginUser.getPassword())) {
-                // SOON WILL USE AUTH TOKENS SYSTEM
-                return Response.ok("{\"message\": \"Login successful\", \"userId\": " + user.getId() + "}").build();
+                String token = JwtUtil.generateToken(user.getUsername(), user.getId());
+                return Response.ok("{\"message\": \"Login successful\", \"token\": \"" + token + "\"}").build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid credentials\"}").build();
             }
@@ -56,7 +55,31 @@ public class AuthenticationService {
     }
 
     /**
+     * This method is used to log out a user
+     *
+     * @param authHeader the Authorization header containing the JWT token
+     * @return a response indicating the result of the logout
+     */
+    @POST
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout(@HeaderParam("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\": \"Missing or invalid Authorization header\"}").build();
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer " prefix
+        if (JwtUtil.validateToken(token)) {
+            JwtUtil.blacklistToken(token);
+            return Response.ok("{\"message\": \"Logout successful\"}").build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid or expired token\"}").build();
+        }
+    }
+
+    /**
      * This method is used to register a new user
+     *
      * @param user the user to register
      * @return a response indicating the result of the registration
      * @throws SQLException if a database access error occurs
@@ -84,6 +107,23 @@ public class AuthenticationService {
             return Response.status(Response.Status.CREATED).entity("{\"message\": \"User registered successfully\", \"id\": " + user.getId() + "}").build();
         } catch (SQLException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Database error: " + e.getMessage() + "\"}").build();
+        }
+    }
+
+    @GET
+    @Path("/protected")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response protectedEndpoint(@HeaderParam("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Missing or invalid Authorization header\"}").build();
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer " prefix
+        if (JwtUtil.validateToken(token)) {
+            String username = JwtUtil.getUsernameFromToken(token);
+            return Response.ok("{\"message\": \"Access granted to protected resource\", \"username\": \"" + username + "\"}").build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid or expired token\"}").build();
         }
     }
 }
