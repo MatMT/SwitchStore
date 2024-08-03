@@ -14,10 +14,9 @@
     <h1 class="mb-4">Games List</h1>
 
     <hr/>
-    <h:form>
-        <h:commandButton value="New Game" action="#{gamesBean.goToCreateForm()}" class="btn btn-success mb-4 me-3"/>
-        <h:commandButton value="Exit" action="index?faces-redirect=true" class="btn btn-secondary mb-4"/>
-    </h:form>
+    <h:link outcome="#{gamesBean.goToCreateForm()}" value="New Game" styleClass="btn btn-success mb-4 me-3" />
+    <h:link outcome="/index" value="Exit" styleClass="btn btn-secondary mb-4" />
+
     <h:messages class="mb-4 text-success"/>
 
     <c:if test="#{not empty flash.successMessage}">
