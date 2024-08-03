@@ -102,7 +102,7 @@ public class GamesBean implements Serializable {
 
     public String goBack() {
         init();
-        return "index?faces-redirect=true";
+        return "list?faces-redirect=true";
     }
 
     // =============================================================================================================== ||
