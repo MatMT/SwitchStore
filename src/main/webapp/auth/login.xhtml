@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -21,21 +19,24 @@
                         <h2 class="text-center">LOGIN</h2>
                     </div>
                     <div class="card-body">
+                        <h:messages globalOnly="true" styleClass="list-unstyled" infoClass="alert alert-info" warnClass="alert alert-warning" errorClass="alert alert-danger" fatalClass="alert alert-danger"/>
                         <h:form>
                             <div class="mb-3">
                                 <h:outputLabel for="username" value="Username:" styleClass="form-label"/>
-                                <h:inputText id="username" value="#{loginBean.username}" required="true" styleClass="form-control"/>
+                                <h:inputText id="username" value="#{authBean.user.username}" required="true" styleClass="form-control"/>
+                                <h:message for="username" styleClass="text-danger"/>
                             </div>
                             <div class="mb-3">
                                 <h:outputLabel for="password" value="Password:" styleClass="form-label"/>
-                                <h:inputSecret id="password" value="#{loginBean.password}" required="true" styleClass="form-control"/>
+                                <h:inputSecret id="password" value="#{authBean.user.password}" required="true" styleClass="form-control"/>
+                                <h:message for="password" styleClass="text-danger"/>
                             </div>
                             <div class="row">
                                 <div class="col-9">
-                                    <h:commandButton value="Login" action="#{loginBean.login}" styleClass="btn btn-primary w-100"/>
+                                    <h:commandButton value="Login" action="#{authBean.login}" styleClass="btn btn-primary w-100"/>
                                 </div>
                                 <div class="col-3">
-                                    <h:link outcome="/index" value="Exit" styleClass="btn btn-secondary w-100" />
+                                    <h:link outcome="/index" value="Exit" styleClass="btn btn-secondary w-100"/>
                                 </div>
                             </div>
                         </h:form>

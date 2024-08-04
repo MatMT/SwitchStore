@@ -21,22 +21,26 @@
                         <h2 class="text-center">REGISTER</h2>
                     </div>
                     <div class="card-body">
+                        <h:messages globalOnly="true" styleClass="list-unstyled" infoClass="alert alert-info" warnClass="alert alert-warning" errorClass="alert alert-danger" fatalClass="alert alert-danger"/>
                         <h:form>
                             <div class="mb-3">
                                 <h:outputLabel for="username" value="Username:" styleClass="form-label"/>
-                                <h:inputText id="username" value="#{registerBean.username}" required="true" styleClass="form-control"/>
+                                <h:inputText id="username" value="#{authBean.user.username}" required="true" styleClass="form-control"/>
+                                <h:message for="username" styleClass="text-danger"/>
                             </div>
                             <div class="mb-3">
                                 <h:outputLabel for="password" value="Password:" styleClass="form-label"/>
-                                <h:inputSecret id="password" value="#{registerBean.password}" required="true" styleClass="form-control"/>
+                                <h:inputSecret id="password" value="#{authBean.user.password}" required="true" styleClass="form-control"/>
+                                <h:message for="password" styleClass="text-danger"/>
                             </div>
                             <div class="mb-3">
                                 <h:outputLabel for="name" value="Name:" styleClass="form-label"/>
-                                <h:inputText id="name" value="#{registerBean.name}" required="true" styleClass="form-control"/>
+                                <h:inputText id="name" value="#{authBean.user.name}" required="true" styleClass="form-control"/>
+                                <h:message for="name" styleClass="text-danger"/>
                             </div>
                             <div class="row">
                                 <div class="col-9">
-                                    <h:commandButton value="Register" action="#{registerBean.register}" styleClass="btn btn-primary"/>
+                                    <h:commandButton value="Register" action="#{authBean.register}" styleClass="btn btn-primary"/>
                                 </div>
                                 <div class="col-3">
                                     <h:link outcome="/index" value="Exit" styleClass="btn btn-secondary w-100" />
