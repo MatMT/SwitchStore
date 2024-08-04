@@ -1,7 +1,7 @@
 package com.dwf.switchstore.sf.model;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 
 public class Estudiantes {
     private int id;
@@ -9,14 +9,14 @@ public class Estudiantes {
     private String nombreCompleto;
     private String direccion;
     private String email;
-    private LocalDate fechaNacimiento; // Cambiado a LocalDate
+    private String fechaNacimiento; // Nuevo atributo para manejar la fecha como String
     private String telefono;
     private String sexo;
 
     public Estudiantes() {
     }
 
-    public Estudiantes(int id, String dui, String nombreCompleto, String direccion, String email, LocalDate fechaNacimiento, String telefono, String sexo) {
+    public Estudiantes(int id, String dui, String nombreCompleto, String direccion, String email, String fechaNacimiento, String telefono, String sexo) {
         this.id = id;
         this.dui = dui;
         this.nombreCompleto = nombreCompleto;
@@ -48,9 +48,9 @@ public class Estudiantes {
 
     public void setEmail(String email) { this.email = email; }
 
-    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public String getFechaNacimiento() { return fechaNacimiento; }
 
-    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
     public String getTelefono() { return telefono; }
 

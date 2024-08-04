@@ -39,9 +39,7 @@
         </div>
         <div class="mb-3">
             <h:outputLabel for="fechaNacimiento" value="Fecha de Nacimiento:"/>
-            <h:inputText id="fechaNacimiento" value="#{estudiantesBean.estudiante.fechaNacimiento}" required="true" class="form-control" type="date">
-                <f:convertDateTime pattern="yyyy-MM-dd"/>
-            </h:inputText>
+            <h:inputText id="fechaNacimiento" value="#{estudiantesBean.estudiante.fechaNacimiento}" required="true" class="form-control" type="date"/>
             <h:message for="fechaNacimiento" class="text-danger"/>
         </div>
         <div class="mb-3">

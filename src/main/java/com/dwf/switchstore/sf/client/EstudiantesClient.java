@@ -9,15 +9,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class EstudiantesClient {
 
     private static final String BASE_URI = "http://localhost:8080/switchstore-1.0-SNAPSHOT/api/estudiantes";
     private final HttpClient client = HttpClient.newHttpClient(); // Send HTTP requests
-    private final ObjectMapper objectMapper = new ObjectMapper(); // Convert JSON to Java objects
+    private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper para JSON
 
     public ArrayList<Estudiantes> getAllEstudiantes() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
@@ -42,10 +40,6 @@ public class EstudiantesClient {
     }
 
     public void createEstudiante(Estudiantes estudiante) throws IOException, InterruptedException {
-        // Asegúrate de formatear correctamente la fecha antes de enviar
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        estudiante.setFechaNacimiento(LocalDate.parse(estudiante.getFechaNacimiento().toString(), formatter));
-
         String requestBody = objectMapper.writeValueAsString(estudiante);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -58,10 +52,6 @@ public class EstudiantesClient {
     }
 
     public void updateEstudiante(int id, Estudiantes estudiante) throws IOException, InterruptedException {
-        // Asegúrate de formatear correctamente la fecha antes de enviar
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        estudiante.setFechaNacimiento(LocalDate.parse(estudiante.getFechaNacimiento().toString(), formatter));
-
         String requestBody = objectMapper.writeValueAsString(estudiante);
 
         HttpRequest request = HttpRequest.newBuilder()

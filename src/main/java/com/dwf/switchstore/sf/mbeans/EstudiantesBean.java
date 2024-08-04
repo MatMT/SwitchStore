@@ -61,7 +61,7 @@ public class EstudiantesBean implements Serializable {
                 return null;
             }
 
-            if (estudiante.getFechaNacimiento() == null) {
+            if (estudiante.getFechaNacimiento() == null || estudiante.getFechaNacimiento().isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Birthdate cannot be empty", null));
                 return null;
             }
@@ -85,7 +85,7 @@ public class EstudiantesBean implements Serializable {
             }
             return goBack();
         } catch (IOException | InterruptedException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving student:" + e.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving student: " + e.getMessage(), null));
             return null;
         }
     }
@@ -99,8 +99,6 @@ public class EstudiantesBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting student: " + e.getMessage(), null));
         }
     }
-
-    // =============================================================================================================== ||
 
     public String goToCreateForm() {
         estudiante = new Estudiantes();
@@ -124,7 +122,6 @@ public class EstudiantesBean implements Serializable {
         return "index?faces-redirect=true";
     }
 
-    // =============================================================================================================== ||
     public List<Estudiantes> getEstudiantes() { return estudiantes; }
     public Estudiantes getEstudiante() { return estudiante; }
     public void setEstudiante(Estudiantes estudiante) { this.estudiante = estudiante; }
