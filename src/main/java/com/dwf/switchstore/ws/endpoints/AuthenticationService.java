@@ -3,6 +3,8 @@ package com.dwf.switchstore.ws.endpoints;
 import com.dwf.switchstore.ws.model.Users;
 import com.dwf.switchstore.ws.model.dao.UsersDAO;
 import com.dwf.switchstore.ws.util.JwtUtil;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -45,7 +47,22 @@ public class AuthenticationService {
             Users user = usersDAO.fetchByUsername(loginUser.getUsername());
             if (user != null && user.getPassword().equals(loginUser.getPassword())) {
                 String token = JwtUtil.generateToken(user.getUsername(), user.getId());
-                return Response.ok("{\"message\": \"Login successful\", \"token\": \"" + token + "\"}").build();
+
+                // Create a JSON object with user data (excluding password)
+                JsonObject userJson = Json.createObjectBuilder()
+                        .add("id", user.getId())
+                        .add("username", user.getUsername())
+                        .add("name", user.getName())
+                        .add("created_at", user.getCreated_at())
+                        .build();
+
+                // Return a JSON object with the token and user data
+                JsonObject responseJson = Json.createObjectBuilder()
+                        .add("message", "Login successful")
+                        .add("token", token)
+                        .add("user", userJson)
+                        .build();
+                return Response.ok(responseJson.toString()).build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid credentials\"}").build();
             }
