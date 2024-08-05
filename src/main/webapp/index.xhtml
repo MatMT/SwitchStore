@@ -12,13 +12,11 @@
         <h1 class="display-4 mb-4">SwitchStore</h1>
         <p class="lead mb-4">Using our brand new REST Web Service integrated with JSF</p>
         <div>
-            <h:form>
-                <h:commandButton value="Try it out" action="list?faces-redirect=true"
-                                 class="btn btn-primary btn-lg me-2"/>
+            <h:link value="Try it out" outcome="auth/login?faces-redirect=true"
+                    styleClass="btn btn-primary btn-lg me-2"/>
 
-                <h:commandButton value="API Documentation" action="api?faces-redirect=true"
-                                 class="btn btn-secondary btn-lg"/>
-            </h:form>
+            <h:link value="API Documentation" outcome="api?faces-redirect=true"
+                    styleClass="btn btn-secondary btn-lg"/>
         </div>
     </div>
 </h:body>

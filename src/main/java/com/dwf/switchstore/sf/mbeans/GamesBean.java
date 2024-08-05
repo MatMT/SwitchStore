@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
@@ -16,16 +17,23 @@ import java.util.List;
 @SessionScoped
 public class GamesBean implements Serializable {
 
+    @Inject // Inject the AuthBean to get the user token
+    private AuthBean authBean;
+
     private GamesClient gamesClient = new GamesClient();
     private List<Games> games;
     private Games game = new Games();
     private boolean isEditing = false;
     private String message;
 
+    /**
+     * Initialize the games list
+     */
     @PostConstruct
     public void init() {
         try {
-            games = gamesClient.getAllGames();
+            String token = authBean.getCurrentUser().getToken(); // Get the user token
+            games = gamesClient.getAllGames(token); // Get all games using the token
 
             if (games == null || games.isEmpty()) {
                 System.out.println("No games found");
@@ -38,9 +46,14 @@ public class GamesBean implements Serializable {
         }
     }
 
-
+    /**
+     * Create a new game
+     * @return the next page to navigate to after creating the game
+     */
     public String createGame() {
         try {
+            String token = authBean.getCurrentUser().getToken();
+
             // Validations
             if (game.getTitle() == null || game.getTitle().isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Title cannot be empty", null));
@@ -58,10 +71,10 @@ public class GamesBean implements Serializable {
             }
 
             if (isEditing) {
-                gamesClient.updateGame(game.getId(), game);
+                gamesClient.updateGame(game.getId(), game, token);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game updated successfully");
             } else {
-                gamesClient.createGame(game);
+                gamesClient.createGame(game, token);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game created successfully");
             }
             return goBack();
@@ -71,9 +84,14 @@ public class GamesBean implements Serializable {
         }
     }
 
+    /**
+     * Delete a game
+     * @param id the ID of the game to delete
+     */
     public void deleteGame(int id) {
         try {
-            gamesClient.deleteGame(id);
+            String token = authBean.getCurrentUser().getToken();
+            gamesClient.deleteGame(id, token);
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game deleted successfully");
             init();
         } catch (IOException | InterruptedException e) {
@@ -83,15 +101,25 @@ public class GamesBean implements Serializable {
 
     // =============================================================================================================== ||
 
+    /**
+     * Go to the create form
+     * @return the create form page
+     */
     public String goToCreateForm() {
         game = new Games();
         isEditing = false;
         return "form?faces-redirect=true";
     }
 
+    /**
+     * Go to the edit form
+     * @param id the ID of the game to edit
+     * @return the edit form page
+     */
     public String goToEditForm(int id) {
         try {
-            game = gamesClient.getGame(id);
+            String token = authBean.getCurrentUser().getToken();
+            game = gamesClient.getGame(id, token);
             isEditing = true;
             return "form?faces-redirect=true";
         } catch (IOException | InterruptedException e) {
@@ -100,9 +128,13 @@ public class GamesBean implements Serializable {
         }
     }
 
+    /**
+     * Go back to the list page
+     * @return the list page
+     */
     public String goBack() {
         init();
-        return "index?faces-redirect=true";
+        return "list?faces-redirect=true";
     }
 
     // =============================================================================================================== ||

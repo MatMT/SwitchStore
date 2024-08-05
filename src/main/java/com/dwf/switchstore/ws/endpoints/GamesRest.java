@@ -1,5 +1,6 @@
 package com.dwf.switchstore.ws.endpoints;
 
+import com.dwf.switchstore.ws.interceptor.Secure;
 import com.dwf.switchstore.ws.model.Games;
 import com.dwf.switchstore.ws.model.dao.GamesDAO;
 import jakarta.ws.rs.*;
@@ -29,6 +30,7 @@ public class GamesRest {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Secure
     public Response getGames() throws SQLException {
         return Response.status(200).entity(gamesDAO.fetchAll()).build();
     }
@@ -43,6 +45,7 @@ public class GamesRest {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secure
     public Response getGame(@PathParam("id") int id) throws SQLException {
         Games game = gamesDAO.fetchById(id);
 
@@ -66,6 +69,7 @@ public class GamesRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Secure
     public Response createGame(Games game) throws SQLException {
 
         // Validation
@@ -96,6 +100,7 @@ public class GamesRest {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
+    @Secure
     public Response deleteGame(@PathParam("id") int id) throws SQLException {
         Games game = gamesDAO.fetchById(id);
 
@@ -126,6 +131,7 @@ public class GamesRest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
+    @Secure
     public Response updateGame(@PathParam("id") int id, Games updatedGame) throws SQLException {
         Games game = gamesDAO.fetchById(id);
 
