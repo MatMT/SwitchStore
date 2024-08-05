@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,7 +14,7 @@ import java.net.http.HttpResponse;
 /**
  * This class is a client to authenticate users
  */
-public class AuthClient {
+public class AuthClient implements Serializable {
 
     private static final String BASE_URI = "http://localhost:8080/switchstore-1.0-SNAPSHOT/api/auth";
     private final HttpClient client = HttpClient.newHttpClient(); // Send HTTP requests

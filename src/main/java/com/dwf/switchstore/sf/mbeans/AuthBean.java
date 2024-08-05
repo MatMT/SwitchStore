@@ -2,26 +2,34 @@ package com.dwf.switchstore.sf.mbeans;
 
 import com.dwf.switchstore.sf.client.AuthClient;
 import com.dwf.switchstore.sf.model.Users;
+import com.dwf.switchstore.sf.util.SessionUtils;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 /**
  * This class is a Managed Bean that handles authentication
  */
 @Named
-@SessionScoped
+@ApplicationScoped
 public class AuthBean implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger("com.dwf.switchstore.sf.mbeans.AuthBean");
-    private final AuthClient authClient = new AuthClient();
+    @Inject
+    private AuthClient authClient;
+
+    @Inject
+    private SessionUtils sessionUtils;
+
     private Users user = new Users();
-    private Users loggedInUser;
+    private String loginUsername;
+    private String loginPassword;
 
     /**
      * Login to the application
@@ -29,17 +37,11 @@ public class AuthBean implements Serializable {
      */
     public String login() {
         try {
-            loggedInUser = authClient.login(user.getUsername(), user.getPassword());
-            LOGGER.info("User logged in: " + loggedInUser.getUsername());
-
-            // Store user in session without password
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", loggedInUser);
-            LOGGER.info("User stored in session: " + FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user"));
-
+            Users loggedInUser = authClient.login(loginUsername, loginPassword);
+            sessionUtils.add("currentUser", loggedInUser);
             return "/games/list?faces-redirect=true";
         } catch (IOException | InterruptedException e) {
-            LOGGER.severe("Login failed: " + e.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed: " + e.getMessage(), null));
+            addMessage(FacesMessage.SEVERITY_ERROR, "Login failed: " + e.getMessage());
             return null;
         }
     }
@@ -51,10 +53,10 @@ public class AuthBean implements Serializable {
     public String register() {
         try {
             authClient.register(user);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration successful", "You can now login"));
-            return "login?faces-redirect=true";
+            addMessage(FacesMessage.SEVERITY_INFO, "Registration successful. You can now login.");
+            return "/auth/login?faces-redirect=true";
         } catch (IOException | InterruptedException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration failed: " + e.getMessage(), null));
+            addMessage(FacesMessage.SEVERITY_ERROR, "Registration failed: " + e.getMessage());
             return null;
         }
     }
@@ -64,49 +66,45 @@ public class AuthBean implements Serializable {
      * @return the login page
      */
     public String logout() {
-        loggedInUser = null;
+        sessionUtils.remove("currentUser");
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "/auth/login?faces-redirect=true";
     }
 
-    /**
-     * Get the logged-in user from the session
-     * @return the logged-in user
-     */
-    public Users getLoggedInUser() {
-        if (loggedInUser == null) {
-            loggedInUser = (Users) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
-        }
-        return loggedInUser;
-    }
-
-    /**
-     * Check if a user is logged in
-     * @return true if a user is logged in, false otherwise
-     */
     public boolean isLoggedIn() {
-        Users user = getLoggedInUser();
-        return user != null && user.getToken() != null;
+        return sessionUtils.get("currentUser") != null;
     }
 
-    /**
-     * Get the user for login/register forms
-     * @return the user
-     */
+    public Users getCurrentUser() {
+        return (Users) sessionUtils.get("currentUser");
+    }
+
+    private void addMessage(FacesMessage.Severity severity, String summary) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, null));
+    }
+
+    // Getters and setters
     public Users getUser() {
         return user;
     }
 
-    /**
-     * Set the user for login/register forms
-     * @param user the user to set
-     */
     public void setUser(Users user) {
         this.user = user;
     }
 
-    public String getToken() {
-        Users user = getLoggedInUser();
-        return user != null ? user.getToken() : null;
+    public String getLoginUsername() {
+        return loginUsername;
+    }
+
+    public void setLoginUsername(String loginUsername) {
+        this.loginUsername = loginUsername;
+    }
+
+    public String getLoginPassword() {
+        return loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword;
     }
 }

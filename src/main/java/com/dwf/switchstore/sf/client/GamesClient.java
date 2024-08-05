@@ -5,13 +5,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
-public class GamesClient {
+public class GamesClient implements Serializable {
 
     private static final String BASE_URI = "http://localhost:8080/switchstore-1.0-SNAPSHOT/api/games";
     private final HttpClient client = HttpClient.newHttpClient(); // Send HTTP requests

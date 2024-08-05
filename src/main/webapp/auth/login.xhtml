@@ -23,12 +23,12 @@
                         <h:form>
                             <div class="mb-3">
                                 <h:outputLabel for="username" value="Username:" styleClass="form-label"/>
-                                <h:inputText id="username" value="#{authBean.user.username}" required="true" styleClass="form-control"/>
+                                <h:inputText id="username" value="#{authBean.loginUsername}" required="true" styleClass="form-control"/>
                                 <h:message for="username" styleClass="text-danger"/>
                             </div>
                             <div class="mb-3">
                                 <h:outputLabel for="password" value="Password:" styleClass="form-label"/>
-                                <h:inputSecret id="password" value="#{authBean.user.password}" required="true" styleClass="form-control"/>
+                                <h:inputSecret id="password" value="#{authBean.loginPassword}" required="true" styleClass="form-control"/>
                                 <h:message for="password" styleClass="text-danger"/>
                             </div>
                             <div class="row">
