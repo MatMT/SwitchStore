@@ -18,54 +18,56 @@ public class GamesClient implements Serializable {
     private final HttpClient client = HttpClient.newHttpClient(); // Send HTTP requests
     private final ObjectMapper objectMapper = new ObjectMapper(); // Convert JSON to Java objects
 
-    public ArrayList<Games> getAllGames() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
+    private HttpRequest addAuthHeader(HttpRequest.Builder builder, String token) {
+        return builder.header("Authorization", "Bearer " + token).build();
+    }
+
+    public ArrayList<Games> getAllGames(String token) throws IOException, InterruptedException {
+        HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI))
                 .header("Accept", "application/json")
-                .GET().build();
+                .GET(), token);
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Response: " + response.body());
-
         return objectMapper.readValue(response.body(), new TypeReference<ArrayList<Games>>() {}); // Convert JSON to ArrayList of Games
     }
 
-    public Games getGame(int id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
+    public Games getGame(int id, String token) throws IOException, InterruptedException {
+        HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI + "/" + id))
                 .header("Accept", "application/json")
-                .GET().build();
+                .GET(), token);
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return objectMapper.readValue(response.body(), Games.class);
     }
 
-    public void createGame(Games game) throws IOException, InterruptedException {
+    public void createGame(Games game, String token) throws IOException, InterruptedException {
         String requestBody = objectMapper.writeValueAsString(game);
 
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody)), token);
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public void updateGame(int id, Games game) throws IOException, InterruptedException {
+    public void updateGame(int id, Games game, String token) throws IOException, InterruptedException {
         String requestBody = objectMapper.writeValueAsString(game);
 
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI + "/" + id))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody)), token);
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public void deleteGame(int id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URI + "/" + id)).DELETE().build();
+    public void deleteGame(int id, String token) throws IOException, InterruptedException {
+        HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URI + "/" + id))
+                .DELETE(), token);
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }

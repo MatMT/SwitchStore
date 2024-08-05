@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
@@ -16,6 +17,9 @@ import java.util.List;
 @SessionScoped
 public class GamesBean implements Serializable {
 
+    @Inject // Inject the AuthBean to get the user token
+    private AuthBean authBean;
+
     private GamesClient gamesClient = new GamesClient();
     private List<Games> games;
     private Games game = new Games();
@@ -25,7 +29,8 @@ public class GamesBean implements Serializable {
     @PostConstruct
     public void init() {
         try {
-            games = gamesClient.getAllGames();
+            String token = authBean.getCurrentUser().getToken();
+            games = gamesClient.getAllGames(token);
 
             if (games == null || games.isEmpty()) {
                 System.out.println("No games found");
@@ -41,6 +46,8 @@ public class GamesBean implements Serializable {
 
     public String createGame() {
         try {
+            String token = authBean.getCurrentUser().getToken();
+
             // Validations
             if (game.getTitle() == null || game.getTitle().isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Title cannot be empty", null));
@@ -58,10 +65,10 @@ public class GamesBean implements Serializable {
             }
 
             if (isEditing) {
-                gamesClient.updateGame(game.getId(), game);
+                gamesClient.updateGame(game.getId(), game, token);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game updated successfully");
             } else {
-                gamesClient.createGame(game);
+                gamesClient.createGame(game, token);
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game created successfully");
             }
             return goBack();
@@ -73,7 +80,8 @@ public class GamesBean implements Serializable {
 
     public void deleteGame(int id) {
         try {
-            gamesClient.deleteGame(id);
+            String token = authBean.getCurrentUser().getToken();
+            gamesClient.deleteGame(id, token);
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Game deleted successfully");
             init();
         } catch (IOException | InterruptedException e) {
@@ -91,7 +99,8 @@ public class GamesBean implements Serializable {
 
     public String goToEditForm(int id) {
         try {
-            game = gamesClient.getGame(id);
+            String token = authBean.getCurrentUser().getToken();
+            game = gamesClient.getGame(id, token);
             isEditing = true;
             return "form?faces-redirect=true";
         } catch (IOException | InterruptedException e) {
