@@ -127,6 +127,23 @@ public class AuthenticationService {
         }
     }
 
+    @POST
+    @Path("/validate-token")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateToken(JsonObject jsonInput) {
+
+        if (jsonInput == null || jsonInput.isEmpty() || !jsonInput.containsKey("token") || jsonInput.getString("token", null) == null || jsonInput.getString("token", null).isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\": \"Token is required\"}").build();
+        }
+
+        if (JwtUtil.validateToken(jsonInput.getString("token", null))) {
+            return Response.ok("{\"message\": \"Token is valid\"}").build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"message\": \"Invalid or expired token\"}").build();
+        }
+    }
+
     @GET
     @Path("/protected")
     @Produces(MediaType.APPLICATION_JSON)
