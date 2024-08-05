@@ -4,8 +4,6 @@ import com.dwf.switchstore.sf.client.AuthClient;
 import com.dwf.switchstore.sf.model.Users;
 import com.dwf.switchstore.sf.util.SessionUtils;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -21,10 +19,10 @@ import java.io.Serializable;
 @ApplicationScoped
 public class AuthBean implements Serializable {
 
-    @Inject
+    @Inject // Inject the AuthClient to authenticate users
     private AuthClient authClient;
 
-    @Inject
+    @Inject // Inject the SessionUtils to manage session attributes
     private SessionUtils sessionUtils;
 
     private Users user = new Users();
@@ -37,12 +35,12 @@ public class AuthBean implements Serializable {
      */
     public String login() {
         try {
-            Users loggedInUser = authClient.login(loginUsername, loginPassword);
-            sessionUtils.add("currentUser", loggedInUser);
-            return "/games/list?faces-redirect=true";
+            Users loggedInUser = authClient.login(loginUsername, loginPassword); // Authenticate the user
+            sessionUtils.add("currentUser", loggedInUser); // Add the user to the session
+            return "/games/list?faces-redirect=true"; // Redirect to the games list page
         } catch (IOException | InterruptedException e) {
-            addMessage(FacesMessage.SEVERITY_ERROR, "Login failed: " + e.getMessage());
-            return null;
+            addMessage(FacesMessage.SEVERITY_ERROR, "Login failed: " + e.getMessage()); // Add an error message
+            return null; // Stay on the same page
         }
     }
 
@@ -52,12 +50,12 @@ public class AuthBean implements Serializable {
      */
     public String register() {
         try {
-            authClient.register(user);
-            addMessage(FacesMessage.SEVERITY_INFO, "Registration successful. You can now login.");
-            return "/auth/login?faces-redirect=true";
+            authClient.register(user); // Register the user
+            addMessage(FacesMessage.SEVERITY_INFO, "Registration successful. You can now login."); // Add a success message
+            return "/auth/login?faces-redirect=true"; // Redirect to the login page
         } catch (IOException | InterruptedException e) {
-            addMessage(FacesMessage.SEVERITY_ERROR, "Registration failed: " + e.getMessage());
-            return null;
+            addMessage(FacesMessage.SEVERITY_ERROR, "Registration failed: " + e.getMessage()); // Add an error message
+            return null; // Stay on the same page
         }
     }
 
@@ -66,19 +64,32 @@ public class AuthBean implements Serializable {
      * @return the login page
      */
     public String logout() {
-        sessionUtils.remove("currentUser");
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "/auth/login?faces-redirect=true";
+        sessionUtils.remove("currentUser"); // Remove the user from the session
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession(); // Invalidate the session
+        return "/auth/login?faces-redirect=true"; // Redirect to the login page
     }
 
+    /**
+     * Check if a user is logged in
+     * @return true if a user is logged in, false otherwise
+     */
     public boolean isLoggedIn() {
         return sessionUtils.get("currentUser") != null;
     }
 
+    /**
+     * Get the current logged in user
+     * @return the current logged in user
+     */
     public Users getCurrentUser() {
         return (Users) sessionUtils.get("currentUser");
     }
 
+    /**
+     * Add a message to the FacesContext
+     * @param severity the severity of the message
+     * @param summary the summary of the message
+     */
     private void addMessage(FacesMessage.Severity severity, String summary) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, null));
     }

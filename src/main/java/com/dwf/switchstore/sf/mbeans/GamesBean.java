@@ -26,11 +26,14 @@ public class GamesBean implements Serializable {
     private boolean isEditing = false;
     private String message;
 
+    /**
+     * Initialize the games list
+     */
     @PostConstruct
     public void init() {
         try {
-            String token = authBean.getCurrentUser().getToken();
-            games = gamesClient.getAllGames(token);
+            String token = authBean.getCurrentUser().getToken(); // Get the user token
+            games = gamesClient.getAllGames(token); // Get all games using the token
 
             if (games == null || games.isEmpty()) {
                 System.out.println("No games found");
@@ -43,7 +46,10 @@ public class GamesBean implements Serializable {
         }
     }
 
-
+    /**
+     * Create a new game
+     * @return the next page to navigate to after creating the game
+     */
     public String createGame() {
         try {
             String token = authBean.getCurrentUser().getToken();
@@ -78,6 +84,10 @@ public class GamesBean implements Serializable {
         }
     }
 
+    /**
+     * Delete a game
+     * @param id the ID of the game to delete
+     */
     public void deleteGame(int id) {
         try {
             String token = authBean.getCurrentUser().getToken();
@@ -91,12 +101,21 @@ public class GamesBean implements Serializable {
 
     // =============================================================================================================== ||
 
+    /**
+     * Go to the create form
+     * @return the create form page
+     */
     public String goToCreateForm() {
         game = new Games();
         isEditing = false;
         return "form?faces-redirect=true";
     }
 
+    /**
+     * Go to the edit form
+     * @param id the ID of the game to edit
+     * @return the edit form page
+     */
     public String goToEditForm(int id) {
         try {
             String token = authBean.getCurrentUser().getToken();
@@ -109,6 +128,10 @@ public class GamesBean implements Serializable {
         }
     }
 
+    /**
+     * Go back to the list page
+     * @return the list page
+     */
     public String goBack() {
         init();
         return "list?faces-redirect=true";

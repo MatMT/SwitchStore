@@ -32,14 +32,17 @@ public class AuthClient implements Serializable {
         Users loginUser = new Users(username, password);
         String requestBody = objectMapper.writeValueAsString(loginUser);
 
+        // Create a POST request to the login endpoint
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI + "/login"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
+        // Send the request and get the response
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Check if the response is successful
         if (response.statusCode() == 200) {
             JsonNode jsonNode = objectMapper.readTree(response.body());
             String token = jsonNode.get("token").asText();

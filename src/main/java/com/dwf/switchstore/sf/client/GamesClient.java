@@ -18,10 +18,25 @@ public class GamesClient implements Serializable {
     private final HttpClient client = HttpClient.newHttpClient(); // Send HTTP requests
     private final ObjectMapper objectMapper = new ObjectMapper(); // Convert JSON to Java objects
 
+    /**
+     * Add the Authorization header to the request
+     *
+     * @param builder the request builder
+     * @param token the JWT token
+     * @return the request with the Authorization header
+     */
     private HttpRequest addAuthHeader(HttpRequest.Builder builder, String token) {
         return builder.header("Authorization", "Bearer " + token).build();
     }
 
+    /**
+     * Get all games
+     *
+     * @param token the JWT token
+     * @return a list of games
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
     public ArrayList<Games> getAllGames(String token) throws IOException, InterruptedException {
         HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI))
@@ -32,6 +47,15 @@ public class GamesClient implements Serializable {
         return objectMapper.readValue(response.body(), new TypeReference<ArrayList<Games>>() {}); // Convert JSON to ArrayList of Games
     }
 
+    /**
+     * Get a game by ID
+     *
+     * @param id the ID of the game
+     * @param token the JWT token
+     * @return the game
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
     public Games getGame(int id, String token) throws IOException, InterruptedException {
         HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI + "/" + id))
@@ -42,6 +66,14 @@ public class GamesClient implements Serializable {
         return objectMapper.readValue(response.body(), Games.class);
     }
 
+    /**
+     * Create a new game
+     *
+     * @param game the game to create
+     * @param token the JWT token
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
     public void createGame(Games game, String token) throws IOException, InterruptedException {
         String requestBody = objectMapper.writeValueAsString(game);
 
@@ -53,6 +85,15 @@ public class GamesClient implements Serializable {
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    /**
+     * Update a game
+     *
+     * @param id the ID of the game
+     * @param game the game to update
+     * @param token the JWT token
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
     public void updateGame(int id, Games game, String token) throws IOException, InterruptedException {
         String requestBody = objectMapper.writeValueAsString(game);
 
@@ -64,6 +105,14 @@ public class GamesClient implements Serializable {
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    /**
+     * Delete a game
+     *
+     * @param id the ID of the game
+     * @param token the JWT token
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
     public void deleteGame(int id, String token) throws IOException, InterruptedException {
         HttpRequest request = addAuthHeader(HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URI + "/" + id))

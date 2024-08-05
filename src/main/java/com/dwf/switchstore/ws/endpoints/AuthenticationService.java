@@ -127,6 +127,12 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * This method is used to validate a JWT token
+     *
+     * @param jsonInput the JSON object containing the token to validate
+     * @return a response indicating the result of the token validation
+     */
     @POST
     @Path("/validate-token")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -144,6 +150,12 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * This method is used to access a protected endpoint
+     *
+     * @param authHeader the Authorization header containing the JWT token
+     * @return a response indicating the result of the protected endpoint access
+     */
     @GET
     @Path("/protected")
     @Produces(MediaType.APPLICATION_JSON)
