@@ -12,7 +12,8 @@
 
 <h:body class="container mt-5">
     <ui:fragment rendered="#{authBean.loggedIn}">
-        <h1 class="mb-4">Games List - #{authBean.currentUser.name} (#{authBean.currentUser.token})</h1>
+        <h1>#{authBean.currentUser.name}</h1>
+        <small class="mb-4">Welcome back! This is the current game list</small>
 
         <hr/>
         <h:link outcome="#{gamesBean.goToCreateForm()}" value="New Game" styleClass="btn btn-success mb-4 me-3" />
@@ -60,6 +61,7 @@
         </h:form>
     </ui:fragment>
 
+    <!-- This needs to be optimized by using a template or define a doFilter/PhaseListener -->
     <ui:fragment rendered="#{not authBean.loggedIn}">
         <div class="alert alert-warning" role="alert">
             You are not logged in. Please <h:link outcome="/auth/login" value="log in"/> to view this page.

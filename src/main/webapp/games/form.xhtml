@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
     <title>Game Form</title>
@@ -10,38 +12,48 @@
 <!-- Dynamic form that adapts depending if an insertion or updated is requested -->
 
 <h:body class="container mt-5">
-    <h1 class="mb-4">#{gamesBean.isEditing ? 'Edit Game' : 'Create Game'}</h1>
-    <hr/>
-    <h:form id="gameForm">
-        <!-- Use panelGroup to decide if ID field will render or not -->
-        <h:panelGroup rendered="#{gamesBean.isEditing}">
+    <ui:fragment rendered="#{authBean.loggedIn}">
+        <h1 class="mb-4">#{gamesBean.isEditing ? 'Edit Game' : 'Create Game'}</h1>
+        <hr/>
+        <h:form id="gameForm">
+            <!-- Use panelGroup to decide if ID field will render or not -->
+            <h:panelGroup rendered="#{gamesBean.isEditing}">
+                <div class="mb-3">
+                    <h:outputLabel for="id" value="ID:"/>
+                    <h:inputText id="id" value="#{gamesBean.game.id}" class="form-control" readonly="true"/>
+                </div>
+            </h:panelGroup>
             <div class="mb-3">
-                <h:outputLabel for="id" value="ID:"/>
-                <h:inputText id="id" value="#{gamesBean.game.id}" class="form-control" readonly="true"/>
+                <h:outputLabel for="title" value="Title:"/>
+                <h:inputText id="title" value="#{gamesBean.game.title}" required="true" class="form-control"/>
+                <!-- message tag to render possible errors -->
+                <h:message for="title" class="text-danger"/>
             </div>
-        </h:panelGroup>
-        <div class="mb-3">
-            <h:outputLabel for="title" value="Title:"/>
-            <h:inputText id="title" value="#{gamesBean.game.title}" required="true" class="form-control"/>
-            <!-- message tag to render possible errors -->
-            <h:message for="title" class="text-danger"/>
-        </div>
-        <div class="mb-3">
-            <h:outputLabel for="genre" value="Genre:"/>
-            <h:inputText id="genre" value="#{gamesBean.game.genre}" required="true" class="form-control"/>
-            <h:message for="genre" class="text-danger"/>
-        </div>
-        <div class="mb-3">
-            <h:outputLabel for="price" value="Price:"/>
-            <h:inputText id="price" value="#{gamesBean.game.price}" required="true" class="form-control">
-                <f:validateDoubleRange minimum="0.01"/>
-            </h:inputText>
-            <h:message for="price" class="text-danger"/>
-        </div>
+            <div class="mb-3">
+                <h:outputLabel for="genre" value="Genre:"/>
+                <h:inputText id="genre" value="#{gamesBean.game.genre}" required="true" class="form-control"/>
+                <h:message for="genre" class="text-danger"/>
+            </div>
+            <div class="mb-3">
+                <h:outputLabel for="price" value="Price:"/>
+                <h:inputText id="price" value="#{gamesBean.game.price}" required="true" class="form-control">
+                    <f:validateDoubleRange minimum="0.01"/>
+                </h:inputText>
+                <h:message for="price" class="text-danger"/>
+            </div>
 
-        <h:commandButton value="#{gamesBean.isEditing ? 'Update' : 'Create'}" action="#{gamesBean.createGame}"
-                         class="btn btn-primary"/>
-        <h:commandLink value="Back" action="#{gamesBean.goBack}" styleClass="btn btn-secondary ms-2" immediate="true"/>
-    </h:form>
+            <h:commandButton value="#{gamesBean.isEditing ? 'Update' : 'Create'}" action="#{gamesBean.createGame}"
+                             class="btn btn-primary"/>
+            <h:commandLink value="Back" action="#{gamesBean.goBack}" styleClass="btn btn-secondary ms-2"
+                           immediate="true"/>
+        </h:form>
+    </ui:fragment>
+
+    <!-- This needs to be optimized by using a template or define a doFilter/PhaseListener -->
+    <ui:fragment rendered="#{not authBean.loggedIn}">
+        <div class="alert alert-warning" role="alert">
+            You are not logged in. Please <h:link outcome="/auth/login" value="log in"/> to view this page.
+        </div>
+    </ui:fragment>
 </h:body>
 </html>

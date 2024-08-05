@@ -4,6 +4,7 @@ import com.dwf.switchstore.sf.client.AuthClient;
 import com.dwf.switchstore.sf.model.Users;
 import com.dwf.switchstore.sf.util.SessionUtils;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -16,7 +17,7 @@ import java.io.Serializable;
  * This class is a Managed Bean that handles authentication
  */
 @Named
-@ApplicationScoped
+@SessionScoped
 public class AuthBean implements Serializable {
 
     @Inject // Inject the AuthClient to authenticate users
@@ -63,7 +64,8 @@ public class AuthBean implements Serializable {
      * Logout from the application
      * @return the login page
      */
-    public String logout() {
+    public String logout() throws IOException, InterruptedException {
+        authClient.logout(getCurrentUser().getToken()); // Logout the user on the web service
         sessionUtils.remove("currentUser"); // Remove the user from the session
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession(); // Invalidate the session
         return "/auth/login?faces-redirect=true"; // Redirect to the login page
@@ -73,8 +75,8 @@ public class AuthBean implements Serializable {
      * Check if a user is logged in
      * @return true if a user is logged in, false otherwise
      */
-    public boolean isLoggedIn() {
-        return sessionUtils.get("currentUser") != null;
+    public boolean isLoggedIn() throws IOException, InterruptedException {
+        return getCurrentUser() != null && authClient.validateToken(getCurrentUser().getToken());
     }
 
     /**

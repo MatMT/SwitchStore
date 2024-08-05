@@ -3,6 +3,7 @@ package com.dwf.switchstore.sf.client;
 import com.dwf.switchstore.sf.model.Users;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse;
 /**
  * This class is a client to authenticate users
  */
+@ApplicationScoped
 public class AuthClient implements Serializable {
 
     private static final String BASE_URI = "http://localhost:8080/switchstore-1.0-SNAPSHOT/api/auth";
@@ -76,5 +78,38 @@ public class AuthClient implements Serializable {
             JsonNode jsonNode = objectMapper.readTree(response.body());
             throw new IOException(jsonNode.get("message").asText());
         }
+    }
+
+    /**
+     * Logout a user
+     * @param token the JWT token to logout
+     * @throws IOException if the request fails
+     * @throws InterruptedException if the request is interrupted
+     */
+    public void logout(String token) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URI + "/logout"))
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            JsonNode jsonNode = objectMapper.readTree(response.body());
+            throw new IOException(jsonNode.get("message").asText());
+        }
+    }
+
+    public boolean validateToken(String token) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URI + "/validate-token"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"token\": \"" + token + "\"}"))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.statusCode() == 200;
     }
 }
