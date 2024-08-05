@@ -3,7 +3,6 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <h:head>
     <title>API Documentation</title>
-    <!-- webjars lets us import properly the required external resources -->
     <h:outputStylesheet library="webjars" name="bootstrap/5.1.3/css/bootstrap.min.css"/>
     <style>
         .json-pre {
@@ -17,191 +16,390 @@
     </style>
 </h:head>
 
-<!-- Since Swagger didn't work during installation the API documentation is handled manually -->
-
 <h:body>
     <div class="container mt-4">
         <h1>API Documentation</h1>
         <hr/>
         <div class="accordion" id="apiAccordion">
-            <!-- GET: Test endpoint -->
+            <!-- Index Endpoint -->
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingZero">
+                <h2 class="accordion-header" id="headingIndex">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
-                        GET /api/index - Receive a chill greeting
+                            data-bs-target="#collapseIndex" aria-expanded="true" aria-controls="collapseIndex">
+                        /api/index
                     </button>
                 </h2>
-                <div id="collapseZero" class="accordion-collapse collapse show" aria-labelledby="headingZero"
+                <div id="collapseIndex" class="accordion-collapse collapse show" aria-labelledby="headingIndex"
                      data-bs-parent="#apiAccordion">
                     <div class="accordion-body">
-                        <strong>URL:</strong> /api/index<br/>
-                        <strong>Method:</strong> GET<br/>
-                        <strong>Description:</strong> Just to make sure the service is running properly.<br/>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>200 OK - Successfully connected to web service.</li>
-                        </ul>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">GET /api/index - Welcome message</h5>
+                                <strong>Method:</strong> GET<br/>
+                                <strong>Description:</strong> Returns a welcome message.<br/>
+                                <strong>Responses:</strong>
+                                <ul>
+                                    <li>200 OK - Successfully connected to web service.</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- GET: All Games endpoint -->
+            <!-- Authentication Endpoints -->
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
+                <h2 class="accordion-header" id="headingAuth">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        GET /api/games - Retrieve all games
+                            data-bs-target="#collapseAuth" aria-expanded="false" aria-controls="collapseAuth">
+                        /api/auth
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                <div id="collapseAuth" class="accordion-collapse collapse" aria-labelledby="headingAuth"
                      data-bs-parent="#apiAccordion">
                     <div class="accordion-body">
-                        <strong>URL:</strong> /api/games<br/>
-                        <strong>Method:</strong> GET<br/>
-                        <strong>Description:</strong> Retrieves all games from the database.<br/>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>200 OK - Successfully retrieved list of games.</li>
-                            <li>500 Internal Server Error - If there was an error processing the request.</li>
-                        </ul>
+                        <div class="accordion" id="authAccordion">
+                            <!-- Login -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingLogin">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseLogin" aria-expanded="false"
+                                            aria-controls="collapseLogin">
+                                        POST /api/auth/login - User Login
+                                    </button>
+                                </h2>
+                                <div id="collapseLogin" class="accordion-collapse collapse"
+                                     aria-labelledby="headingLogin"
+                                     data-bs-parent="#authAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Authenticates a user and returns a JWT token.<br/>
+                                        <strong>Request Body (JSON):</strong>
+                                        <pre class="json-pre">
+{
+  "username": "user",
+  "password": "password"
+}</pre>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully authenticated. Returns token and user data.</li>
+                                            <li>401 Unauthorized - Invalid credentials.</li>
+                                            <li>400 Bad Request - Missing username or password.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Logout -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingLogout">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseLogout" aria-expanded="false"
+                                            aria-controls="collapseLogout">
+                                        POST /api/auth/logout - User Logout
+                                    </button>
+                                </h2>
+                                <div id="collapseLogout" class="accordion-collapse collapse"
+                                     aria-labelledby="headingLogout"
+                                     data-bs-parent="#authAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Logs out a user by invalidating their token.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully logged out.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Register -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingRegister">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseRegister" aria-expanded="false"
+                                            aria-controls="collapseRegister">
+                                        POST /api/auth/register - User Registration
+                                    </button>
+                                </h2>
+                                <div id="collapseRegister" class="accordion-collapse collapse"
+                                     aria-labelledby="headingRegister"
+                                     data-bs-parent="#authAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Registers a new user.<br/>
+                                        <strong>Request Body (JSON):</strong>
+                                        <pre class="json-pre">
+{
+  "username": "newuser",
+  "password": "newpassword",
+  "name": "New User"
+}</pre>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>201 Created - User successfully registered.</li>
+                                            <li>400 Bad Request - Missing required fields.</li>
+                                            <li>409 Conflict - Username already exists.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Validate Token -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingValidateToken">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseValidateToken" aria-expanded="false"
+                                            aria-controls="collapseValidateToken">
+                                        POST /api/auth/validate-token - Validate JWT Token
+                                    </button>
+                                </h2>
+                                <div id="collapseValidateToken" class="accordion-collapse collapse"
+                                     aria-labelledby="headingValidateToken"
+                                     data-bs-parent="#authAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Validates a JWT token.<br/>
+                                        <strong>Request Body (JSON):</strong>
+                                        <pre class="json-pre">
+{
+  "token": "JWT_TOKEN"
+}</pre>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Token is valid.</li>
+                                            <li>401 Unauthorized - Invalid or expired token.</li>
+                                            <li>400 Bad Request - Missing token.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Protected Endpoint -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingProtected">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseProtected" aria-expanded="false"
+                                            aria-controls="collapseProtected">
+                                        GET /api/auth/protected - Access Protected Resource
+                                    </button>
+                                </h2>
+                                <div id="collapseProtected" class="accordion-collapse collapse"
+                                     aria-labelledby="headingProtected"
+                                     data-bs-parent="#authAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> GET<br/>
+                                        <strong>Description:</strong> Accesses a protected endpoint.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Access granted to protected resource.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- GET: Get one game endpoint -->
+            <!-- Games Endpoints -->
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
+                <h2 class="accordion-header" id="headingGames">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                        GET /api/games/{id} - Retrieve a single game
+                            data-bs-target="#collapseGames" aria-expanded="false" aria-controls="collapseGames">
+                        /api/games
                     </button>
                 </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                <div id="collapseGames" class="accordion-collapse collapse" aria-labelledby="headingGames"
                      data-bs-parent="#apiAccordion">
                     <div class="accordion-body">
-                        <strong>URL:</strong> /api/games/{id}<br/>
-                        <strong>Method:</strong> GET<br/>
-                        <strong>Description:</strong> Retrieves a specific game from the database.<br/>
-                        <strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>id (Integer):</strong> Required. The identifier of the game.</li>
-                        </ul>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>200 OK - Successfully retrieved the selected game.</li>
-                            <li>404 Not Found - The requested game was not found on the source.</li>
-                            <li>500 Internal Server Error - If there was an error processing the request.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+                        <div class="accordion" id="gamesAccordion">
+                            <!-- GET All Games -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingGetAllGames">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseGetAllGames" aria-expanded="false"
+                                            aria-controls="collapseGetAllGames">
+                                        GET /api/games - Retrieve all games
+                                    </button>
+                                </h2>
+                                <div id="collapseGetAllGames" class="accordion-collapse collapse"
+                                     aria-labelledby="headingGetAllGames"
+                                     data-bs-parent="#gamesAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> GET<br/>
+                                        <strong>Description:</strong> Retrieves all games from the database.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully retrieved list of games.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                            <li>500 Internal Server Error - If there was an error processing the request.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
 
-            <!-- POST: New game endpoint -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        POST /api/games - Create a new game
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                     data-bs-parent="#apiAccordion">
-                    <div class="accordion-body">
-                        <strong>URL:</strong> /api/games<br/>
-                        <strong>Method:</strong> POST<br/>
-                        <strong>Description:</strong> Creates a new game in the database.<br/>
-                        <strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>title (String):</strong> Required. The title of the game.</li>
-                            <li><strong>genre (String):</strong> Required. The genre of the game.</li>
-                            <li><strong>price (Integer):</strong> Required. The price of the game.</li>
-                        </ul>
-                        <strong>Request Body (JSON):</strong>
-                        <pre class="json-pre">{
+                            <!-- GET One Game -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingGetOneGame">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseGetOneGame" aria-expanded="false"
+                                            aria-controls="collapseGetOneGame">
+                                        GET /api/games/{id} - Retrieve a single game
+                                    </button>
+                                </h2>
+                                <div id="collapseGetOneGame" class="accordion-collapse collapse"
+                                     aria-labelledby="headingGetOneGame"
+                                     data-bs-parent="#gamesAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> GET<br/>
+                                        <strong>Description:</strong> Retrieves a specific game from the database.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Parameters:</strong>
+                                        <ul>
+                                            <li><strong>id (Integer):</strong> Required. The identifier of the game.
+                                            </li>
+                                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully retrieved the selected game.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                            <li>404 Not Found - The requested game was not found.</li>
+                                            <li>500 Internal Server Error - If there was an error processing the request.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- POST New Game -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingPostGame">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapsePostGame" aria-expanded="false"
+                                            aria-controls="collapsePostGame">
+                                        POST /api/games - Create a new game
+                                    </button>
+                                </h2>
+                                <div id="collapsePostGame" class="accordion-collapse collapse"
+                                     aria-labelledby="headingPostGame"
+                                     data-bs-parent="#gamesAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Creates a new game in the database.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Request Body (JSON):</strong>
+                                        <pre class="json-pre">
+{
   "title": "Sample game",
   "genre": "Action",
   "price": 25
 }</pre>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>201 Created - Successfully created new game.</li>
-                            <li>400 Bad Request - If the request body is incorrect or missing required fields.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- POST: Update game endpoint -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFour">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                        POST /api/games/{id} - Edit an existing game
-                    </button>
-                </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                     data-bs-parent="#apiAccordion">
-                    <div class="accordion-body">
-                        <strong>URL:</strong> /api/games/{id}<br/>
-                        <strong>Method:</strong> POST<br/>
-                        <strong>Description:</strong> Updates a selected game's information in the database.<br/>
-                        <strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>id (URL | Integer):</strong> Required. The identifier of the game.</li>
-                            <li><strong>title (String):</strong> Required. The title of the game.</li>
-                            <li><strong>genre (String):</strong> Required. The genre of the game.</li>
-                            <li><strong>price (Integer):</strong> Required. The price of the game.</li>
-                        </ul>
-                        <strong>Request Body (JSON):</strong>
-                        <pre class="json-pre">{
-  "title": "Edited game",
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>201 Created - Successfully created new game.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                            <li>400 Bad Request - If the request body is incorrect or missing required fields.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- POST Update Game -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingUpdateGame">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseUpdateGame" aria-expanded="false" aria-controls="collapseUpdateGame">
+                                        POST /api/games/{id} - Update an existing game
+                                    </button>
+                                </h2>
+                                <div id="collapseUpdateGame" class="accordion-collapse collapse" aria-labelledby="headingUpdateGame"
+                                     data-bs-parent="#gamesAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> POST<br/>
+                                        <strong>Description:</strong> Updates a selected game's information in the database.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Parameters:</strong>
+                                        <ul>
+                                            <li><strong>id (Integer):</strong> Required. The identifier of the game.</li>
+                                        </ul>
+                                        <strong>Request Body (JSON):</strong>
+                                        <pre class="json-pre">
+{
+  "title": "Updated game",
   "genre": "Adventure",
-  "price": 99
+  "price": 30
 }</pre>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>201 Created - Successfully updated game information.</li>
-                            <li>400 Bad Request - If the request body is incorrect or missing required fields.</li>
-                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully updated game information.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                            <li>404 Not Found - The requested game was not found.</li>
+                                            <li>400 Bad Request - If the request body is incorrect or missing required fields.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DELETE Game -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingDeleteGame">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseDeleteGame" aria-expanded="false" aria-controls="collapseDeleteGame">
+                                        DELETE /api/games/{id} - Delete a game
+                                    </button>
+                                </h2>
+                                <div id="collapseDeleteGame" class="accordion-collapse collapse" aria-labelledby="headingDeleteGame"
+                                     data-bs-parent="#gamesAccordion">
+                                    <div class="accordion-body">
+                                        <strong>Method:</strong> DELETE<br/>
+                                        <strong>Description:</strong> Deletes a specific game from the database.<br/>
+                                        <strong>Headers:</strong>
+                                        <ul>
+                                            <li>Authorization: Bearer [JWT_TOKEN]</li>
+                                        </ul>
+                                        <strong>Parameters:</strong>
+                                        <ul>
+                                            <li><strong>id (Integer):</strong> Required. The identifier of the game.</li>
+                                        </ul>
+                                        <strong>Responses:</strong>
+                                        <ul>
+                                            <li>200 OK - Successfully deleted the selected game.</li>
+                                            <li>401 Unauthorized - Invalid or missing token.</li>
+                                            <li>400 Bad Request - The requested game doesn't exist.</li>
+                                            <li>500 Internal Server Error - If there was an error processing the request.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- DELETE: Delete game endpoint -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFive">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                        DELETE /api/games/{id} - Delete a game
-                    </button>
-                </h2>
-                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                     data-bs-parent="#apiAccordion">
-                    <div class="accordion-body">
-                        <strong>URL:</strong> /api/games/{id}<br/>
-                        <strong>Method:</strong> DELETE<br/>
-                        <strong>Description:</strong> Deletes a specific game from the database.<br/>
-                        <strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>id (Integer):</strong> Required. The identifier of the game.</li>
-                        </ul>
-                        <strong>Responses:</strong>
-                        <ul>
-                            <li>200 OK - Successfully deleted the selected game.</li>
-                            <li>404 Not Found - The requested game was not found on the source.</li>
-                            <li>500 Internal Server Error - If there was an error processing the request.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
         </div>
         <hr/>
-        <h:form>
-            <h:commandButton value="Got it!" action="index?faces-redirect=true"
-                             class="btn btn-secondary mt-4"/>
-        </h:form>
+        <h:link outcome="index?faces-redirect=true" value="Got it!" class="btn btn-secondary mt-4" />
     </div>
 
     <h:outputScript library="webjars" name="bootstrap/5.1.3/js/bootstrap.bundle.min.js"/>
