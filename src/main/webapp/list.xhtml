@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+>
 
 <h:head>
     <title>Estudiantes List</title>
@@ -44,45 +46,56 @@
     </c:if>
 
     <h:form id="estudianteForm">
-        <h:dataTable value="#{estudiantesBean.estudiantes}" var="estudiante" class="table table-bordered table-hover">
-            <h:column>
-                <f:facet name="header">ID</f:facet>
-                #{estudiante.id}
-            </h:column>
-            <h:column>
-                <f:facet name="header">DUI</f:facet>
-                #{estudiante.dui}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Nombre Completo</f:facet>
-                #{estudiante.nombreCompleto}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Dirección</f:facet>
-                #{estudiante.direccion}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Email</f:facet>
-                #{estudiante.email}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Teléfono</f:facet>
-                #{estudiante.telefono}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Sexo</f:facet>
-                #{estudiante.sexo}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Acciones</f:facet>
-                <div class="btn-group">
-                    <h:commandButton value="Editar" action="#{estudiantesBean.goToEditForm(estudiante.id)}" class="btn btn-primary me-2"/>
-                    <h:commandButton value="Eliminar" action="#{estudiantesBean.deleteEstudiante(estudiante.id)}" class="btn btn-danger"
-                                     onclick="return confirm('¿Estás seguro de que deseas eliminar a este estudiante?');"/>
-                </div>
-            </h:column>
-        </h:dataTable>
+        <div class="card">
+            <p:dataTable value="#{estudiantesBean.estudiantes}" var="estudiante"
+                         class="table table-bordered table-hover"
+                         paginator="true" rows="10">
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{estudiante.id}" />
+                </p:column>
+
+                <p:column headerText="DUI">
+                    <h:outputText value="#{estudiante.dui}" />
+                </p:column>
+
+                <p:column headerText="Nombre Completo">
+                    <h:outputText value="#{estudiante.nombreCompleto}" />
+                </p:column>
+
+                <p:column headerText="Dirección">
+                    <h:outputText value="#{estudiante.direccion}" />
+                </p:column>
+
+                <p:column headerText="Email">
+                    <h:outputText value="#{estudiante.email}" />
+                </p:column>
+
+                <p:column headerText="Teléfono">
+                    <h:outputText value="#{estudiante.telefono}" />
+                </p:column>
+
+                <p:column headerText="Sexo">
+                    <h:outputText value="#{estudiante.sexo}" />
+                </p:column>
+
+                <p:column headerText="Acciones">
+                    <div class="btn-group">
+                        <p:commandButton value="Editar" action="#{estudiantesBean.goToEditForm(estudiante.id)}"
+                                         icon="pi pi-pencil" styleClass="btn btn-primary me-2"/>
+                        <p:commandButton value="Eliminar" action="#{estudiantesBean.deleteEstudiante(estudiante.id)}"
+                                         icon="pi pi-trash" styleClass="btn btn-danger"
+                                         update="@form"
+                                         oncomplete="PF('confirmation').show()"
+                                         process="@this"
+                                         onclick="return confirm('¿Estás seguro de que deseas eliminar a este estudiante?');"/>
+                    </div>
+                </p:column>
+
+            </p:dataTable>
+        </div>
     </h:form>
+
 </h:body>
 
 </html>
