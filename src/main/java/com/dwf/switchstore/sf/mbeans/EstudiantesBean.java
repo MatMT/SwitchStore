@@ -7,9 +7,11 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import org.primefaces.PrimeFaces;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Named
@@ -21,22 +23,6 @@ public class EstudiantesBean implements Serializable {
     private Estudiantes estudiante = new Estudiantes();
     private boolean isEditing = false;
     private String message;
-
-    @PostConstruct
-    public void init() {
-        try {
-            estudiantes = estudiantesClient.getAllEstudiantes();
-
-            if (estudiantes == null || estudiantes.isEmpty()) {
-                System.out.println("No students found");
-            } else {
-                System.out.println("Students loaded: " + estudiantes.size());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public String createEstudiante() {
         try {
@@ -78,12 +64,12 @@ public class EstudiantesBean implements Serializable {
 
             if (isEditing) {
                 estudiantesClient.updateEstudiante(estudiante.getId(), estudiante);
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Student updated successfully");
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Estudiante actualizado exitosamente");
             } else {
                 estudiantesClient.createEstudiante(estudiante);
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Student created successfully");
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Estudiante creado exitosamente");
             }
-            return goBack();
+            return goList();
         } catch (IOException | InterruptedException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving student: " + e.getMessage(), null));
             return null;
@@ -93,10 +79,10 @@ public class EstudiantesBean implements Serializable {
     public void deleteEstudiante(int id) {
         try {
             estudiantesClient.deleteEstudiante(id);
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("successMessage", "Student deleted successfully");
-            init();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Éxito", "Estudiante eliminado correctamente"));
+            PrimeFaces.current().executeScript("setTimeout(function(){ window.location.reload(); }, 3000);");
         } catch (IOException | InterruptedException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting student: " + e.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar estudiante: " + e.getMessage()));
         }
     }
 
@@ -118,16 +104,38 @@ public class EstudiantesBean implements Serializable {
     }
 
     public String goBack() {
-        init();
         return "index?faces-redirect=true";
     }
 
-    public List<Estudiantes> getEstudiantes() { return estudiantes; }
-    public Estudiantes getEstudiante() { return estudiante; }
-    public void setEstudiante(Estudiantes estudiante) { this.estudiante = estudiante; }
+    public String goList() {
+        return "list?faces-redirect=true";
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-    public boolean getIsEditing() { return isEditing; }
-    public void setIsEditing(boolean isEditing) { this.isEditing = isEditing; }
+    public List<Estudiantes> getEstudiantes() {
+        return estudiantes;
+    }
+
+    public Estudiantes getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiantes estudiante) {
+        this.estudiante = estudiante;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean getIsEditing() {
+        return isEditing;
+    }
+
+    public void setIsEditing(boolean isEditing) {
+        this.isEditing = isEditing;
+    }
 }

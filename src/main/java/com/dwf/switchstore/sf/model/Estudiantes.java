@@ -9,7 +9,7 @@ public class Estudiantes {
     private String nombreCompleto;
     private String direccion;
     private String email;
-    private String fechaNacimiento; // Nuevo atributo para manejar la fecha como String
+    private String fechaNacimiento;
     private String telefono;
     private String sexo;
 
@@ -48,9 +48,9 @@ public class Estudiantes {
 
     public void setEmail(String email) { this.email = email; }
 
-    public String getFechaNacimiento() { return fechaNacimiento; }
+    public String  getFechaNacimiento() { return fechaNacimiento; }
 
-    public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public void setFechaNacimiento(String  fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
     public String getTelefono() { return telefono; }
 

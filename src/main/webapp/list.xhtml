@@ -14,12 +14,15 @@
             background-color: #007bff;
             color: white;
         }
+
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
+
         .btn-primary, .btn-success, .btn-danger {
             width: 100%;
         }
+
         .btn-group {
             display: flex;
             justify-content: center;
@@ -27,17 +30,21 @@
     </style>
 </h:head>
 
-<h:body class="container mt-5">
+<h:body class="mt-5 mx-auto" style="width: 1200px;">
     <h1 class="mb-4">Estudiantes List</h1>
 
     <hr/>
     <h:form>
         <div class="mb-4 d-flex justify-content-between">
-            <h:commandButton value="Nuevo Estudiante" action="#{estudiantesBean.goToCreateForm()}" class="btn btn-success"/>
+            <h:commandButton value="Nuevo Estudiante" action="#{estudiantesBean.goToCreateForm()}"
+                             class="btn btn-success"/>
             <h:commandButton value="Salir" action="index?faces-redirect=true" class="btn btn-secondary"/>
         </div>
     </h:form>
-    <h:messages class="mb-4 text-success"/>
+
+    <p:messages id="messages" showDetail="true" closable="true">
+        <p:autoUpdate/>
+    </p:messages>
 
     <c:if test="#{not empty flash.successMessage}">
         <div class="alert alert-info" role="alert">
@@ -45,56 +52,66 @@
         </div>
     </c:if>
 
-    <h:form id="estudianteForm">
-        <div class="card">
-            <p:dataTable value="#{estudiantesBean.estudiantes}" var="estudiante"
-                         class="table table-bordered table-hover"
-                         paginator="true" rows="10">
+        <h1 class="mb-4">DataTable</h1>
+
+        <h:form>
+
+            <p:commandButton value="Refrescar" actionListener="#{estudiantesFacesBean.init()}" update="estudiantesTable"
+                             styleClass="btn btn-primary mb-4" ajax="false"/>
+
+            <p:dataTable id="estudiantesTable" value="#{estudiantesFacesBean.estudiantes}" var="estudiante"
+                         class="table table-bordered table-hover text-center">
 
                 <p:column headerText="ID">
-                    <h:outputText value="#{estudiante.id}" />
+                    <h:outputText value="#{estudiante.id}"/>
                 </p:column>
 
                 <p:column headerText="DUI">
-                    <h:outputText value="#{estudiante.dui}" />
+                    <h:outputText value="#{estudiante.dui}"/>
                 </p:column>
 
                 <p:column headerText="Nombre Completo">
-                    <h:outputText value="#{estudiante.nombreCompleto}" />
+                    <h:outputText value="#{estudiante.nombreCompleto}"/>
                 </p:column>
 
                 <p:column headerText="Dirección">
-                    <h:outputText value="#{estudiante.direccion}" />
+                    <h:outputText value="#{estudiante.direccion}"/>
                 </p:column>
 
                 <p:column headerText="Email">
-                    <h:outputText value="#{estudiante.email}" />
+                    <h:outputText value="#{estudiante.email}"/>
                 </p:column>
 
                 <p:column headerText="Teléfono">
-                    <h:outputText value="#{estudiante.telefono}" />
+                    <h:outputText value="#{estudiante.telefono}"/>
                 </p:column>
 
                 <p:column headerText="Sexo">
-                    <h:outputText value="#{estudiante.sexo}" />
+                    <h:outputText value="#{estudiante.sexo}"/>
                 </p:column>
 
                 <p:column headerText="Acciones">
-                    <div class="btn-group">
-                        <p:commandButton value="Editar" action="#{estudiantesBean.goToEditForm(estudiante.id)}"
-                                         icon="pi pi-pencil" styleClass="btn btn-primary me-2"/>
-                        <p:commandButton value="Eliminar" action="#{estudiantesBean.deleteEstudiante(estudiante.id)}"
-                                         icon="pi pi-trash" styleClass="btn btn-danger"
-                                         update="@form"
-                                         oncomplete="PF('confirmation').show()"
-                                         process="@this"
-                                         onclick="return confirm('¿Estás seguro de que deseas eliminar a este estudiante?');"/>
-                    </div>
-                </p:column>
+                    <p:commandButton value="Editar" action="#{estudiantesBean.goToEditForm(estudiante.id)}"
+                                     icon="pi pi-pencil" styleClass="w-100 ui-button-secondary" ajax="false" />
+                    <hr/>
+                    <p:commandButton value="Eliminar" action="#{estudiantesBean.deleteEstudiante(estudiante.id)}"
+                                     icon="pi pi-trash" styleClass="w-100 ui-button-danger" ajax="false">
+                        <p:confirm header="Confirmación"
+                                   message="¿Estás seguro de que quieres eliminar este estudiante?"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
 
+                </p:column>
             </p:dataTable>
-        </div>
-    </h:form>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                                 icon="pi pi-times"/>
+            </p:confirmDialog>
+
+        </h:form>
+
 
 </h:body>
 

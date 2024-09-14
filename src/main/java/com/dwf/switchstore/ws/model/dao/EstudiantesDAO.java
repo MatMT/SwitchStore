@@ -15,7 +15,7 @@ public class EstudiantesDAO extends AppConnection {
         pstmt.setString(2, estudiante.getNombreCompleto());
         pstmt.setString(3, estudiante.getDireccion());
         pstmt.setString(4, estudiante.getEmail());
-        pstmt.setDate(5, Date.valueOf(estudiante.getFechaNacimiento())); // Asegúrate de que la fecha esté en el formato correcto
+        pstmt.setString(5, estudiante.getFechaNacimiento());
         pstmt.setString(6, estudiante.getTelefono());
         pstmt.setString(7, estudiante.getSexo());
         pstmt.executeUpdate();
@@ -34,7 +34,7 @@ public class EstudiantesDAO extends AppConnection {
         pstmt.setString(2, estudiante.getNombreCompleto());
         pstmt.setString(3, estudiante.getDireccion());
         pstmt.setString(4, estudiante.getEmail());
-        pstmt.setDate(5, Date.valueOf(estudiante.getFechaNacimiento())); // Asegúrate de que la fecha esté en el formato correcto
+        pstmt.setString(5, estudiante.getFechaNacimiento()); // Asegúrate de que la fecha esté en el formato correcto
         pstmt.setString(6, estudiante.getTelefono());
         pstmt.setString(7, estudiante.getSexo());
         pstmt.setInt(8, estudiante.getId());
