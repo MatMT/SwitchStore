@@ -79,8 +79,8 @@ public class EstudiantesBean implements Serializable {
     public void deleteEstudiante(int id) {
         try {
             estudiantesClient.deleteEstudiante(id);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Éxito", "Estudiante eliminado correctamente"));
-            PrimeFaces.current().executeScript("setTimeout(function(){ window.location.reload(); }, 3000);");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Estudiante eliminado correctamente"));
+            PrimeFaces.current().executeScript("setTimeout(function(){ window.location.href = window.location.href; }, 3000);");
         } catch (IOException | InterruptedException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar estudiante: " + e.getMessage()));
         }

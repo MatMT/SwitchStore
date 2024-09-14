@@ -31,14 +31,14 @@
 </h:head>
 
 <h:body class="mt-5 mx-auto" style="width: 1200px;">
-    <h1 class="mb-4">Estudiantes List</h1>
+    <h1 class="mb-4 text-center">Estudiantes List</h1>
 
     <hr/>
     <h:form>
         <div class="mb-4 d-flex justify-content-between">
             <h:commandButton value="Nuevo Estudiante" action="#{estudiantesBean.goToCreateForm()}"
-                             class="btn btn-success"/>
-            <h:commandButton value="Salir" action="index?faces-redirect=true" class="btn btn-secondary"/>
+                             class="btn btn-success m-2"/>
+            <h:commandButton value="Salir" action="index?faces-redirect=true" class="btn btn-secondary m-2"/>
         </div>
     </h:form>
 
@@ -52,7 +52,7 @@
         </div>
     </c:if>
 
-        <h1 class="mb-4">DataTable</h1>
+        <h1 class="mb-4 text-center text-black">DataTable</h1>
 
         <h:form>
 
